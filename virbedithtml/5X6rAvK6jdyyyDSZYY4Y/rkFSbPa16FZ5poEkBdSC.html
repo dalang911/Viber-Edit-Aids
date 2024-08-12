@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>virb edit 的朋友</title>
+  <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<script>
+  function download(url) {
+    (async () => {
+      var v = await aardio.download(url);
+    })()
+  }
+</script>
+
+<body>
+
+  <div class="layui-row">
+    <div class="layui-col-xs12 layui-col-md12">
+      <div class="grid-demo grid-demo-bg2">
+        <img src="./inska.jpg" width="100%" alt="no99">
+      </div>
+    </div>
+    <div class="layui-col-xs8 layui-col-md8">
+      <div class="grid-demo grid-demo-bg1">
+        <fieldset class="layui-elem-field">
+          <legend><i><span class="layui-font-blue"><strong>inska风格 inska style</strong></span></i></legend>
+          <div class="layui-field-box">
+            拥有酷炫的仪表盘，适合各种运动。<br>
+            Featuring a cool dashboard, suitable for various sports.</br>
+            <span class="layui-badge layui-bg-green layui-margin-1">心率</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">配速</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">距离</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">时长</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">地图</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">日期</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">时速</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">踏频</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">坡度</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">高程</span><br>
+            <span class="layui-badge layui-bg-green layui-margin-1">Heart Rate</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Pace</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Distance</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Duration</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Map</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Date</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Speed</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Cadence</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Grade</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Elevation</span><br>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <div class="layui-col-xs4 layui-col-md4">
+      <div class="grid-demo">
+        </br>
+        <span class="layui-font-24 layui-margin-1">尝试一下？ Give it a try</span></br>
+        <button type="button" class="layui-btn layui-btn-normal"
+          onclick="download('https://virbedit.data4u.vip/5X6rAvK6jdyyyDSZYY4Y/inska.zip')">选它 okay</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-row">
+    <div class="layui-col-xs12 layui-col-md12">
+      <div class="grid-demo grid-demo-bg2">
+        <img src="./no99.jpg" width="100%" alt="no99">
+      </div>
+    </div>
+    <div class="layui-col-xs8 layui-col-md8">
+      <div class="grid-demo grid-demo-bg1">
+        <fieldset class="layui-elem-field">
+          <legend><del><i><span class="layui-font-red"><strong>No99风格 No99 style</strong></span></i></del></legend>
+          <div class="layui-field-box">
+            无需99，即可拥有99风格的低配版。<br>
+            No need for 99, you can have a low-cost version of the 99 style.</br>
+            <span class="layui-badge layui-bg-green layui-margin-1">步速</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">步速上下无单位</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">地图带箭头</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">地图带箭头大尺寸</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">经纬度</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">距离条</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">距离条[带范围]</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">时间组合</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">踏频</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">踏频上下无单位</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">心率标尺</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">心率动画</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">心率动画上下无单位</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">心率折线1比4</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">心率折线1比8</span><br>
+            <span class="layui-badge layui-bg-green layui-margin-1">Pace</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Pace (no units)</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Map with arrow</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Map with large arrow</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Latitude and longitude</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Distance bar</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Distance bar [with range]</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Time combination</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Cadence</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Cadence (no units)</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Heart rate scale</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Heart rate animation</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Heart rate animation (no units)</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Heart rate line graph (1:4)</span>
+            <span class="layui-badge layui-bg-green layui-margin-1">Heart rate line graph (1:8)</span>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <div class="layui-col-xs4 layui-col-md4">
+      <div class="grid-demo">
+        </br>
+        <span class="layui-font-24 layui-margin-1">尝试一下？ Give it a try</span></br>
+        <button type="button" class="layui-btn layui-btn-normal"
+          onclick="download('https://virbedit.data4u.vip/5X6rAvK6jdyyyDSZYY4Y/no99.zip')">选它 okay</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- body 末尾处引入 layui -->
+  <script src="layui/layui.js"></script>
+
+</body>
+
+</html>
