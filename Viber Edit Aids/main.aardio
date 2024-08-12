@@ -1,0 +1,135 @@
+//RUNAS//
+import win.ui;
+import wsock.tcp.asynHttpServer;
+import fsys.hosts;
+import console;
+import process.admin;
+import web.view;
+import io;
+import inet.downBox;
+import zlib.unzip;
+/*DSG{{*/
+var mainForm = win.form(text="VIRB Edit 辅助工具 Viber Edit Aids v20240808";right=799;bottom=699;max=false)
+mainForm.add(
+button={cls="button";text="开启代理服务";left=374;top=60;right=518;bottom=90;z=5};
+checkbox1={cls="checkbox";text="开启地图服务";left=27;top=60;right=127;bottom=90;z=1};
+plus={cls="plus";left=531;top=60;right=781;bottom=90;align="left";z=6};
+plus2={cls="plus";left=135;top=60;right=365;bottom=90;align="left";z=7};
+static={cls="static";text='创建地图服务，需要管理员权限，需占用 80 端口。\r\nCreating a map service requires administrator privileges. It requires occupying port 80.';left=27;top=14;right=365;bottom=64;transparent=1;z=2};
+static2={cls="static";text='将网站代理到本地，需要管理员权限。\r\nTo proxy the website to the local machine requires administrator privileges.';left=381;top=14;right=785;bottom=81;notify=1;transparent=1;z=3};
+webv={cls="custom";left=2;top=99;right=799;bottom=697;z=4}
+)
+/*}}*/
+
+//声明http服务器
+	var httpServer = wsock.tcp.asynHttpServer();
+	httpServer.documentBase = "/res/static.garmincdn.com/";//配置资源虚拟路径
+	httpServer.run({
+	//自定义某个路径的响应程序
+		function(response,request,session){ 
+         	response.loadcode(request.path);
+    	}
+	});
+
+
+// 启动 Web 服务器
+function startWebServer() {
+	httpServer.start("127.0.0.1",80);
+	mainForm.checkbox1.checked = true;
+    mainForm.plus2.text = "地图服务已开启 Map services is enabled";
+    mainForm.plus2.color = 0xFF458B00;	
+	//var url = httpServer.getUrl("/index.html"); //参数支持 aardio 工程嵌入资源目录路径		
+}
+
+// 定义停止 Web 服务器的函数
+function stopWebServer() {
+	httpServer.stop();
+    mainForm.plus2.text = "地图服务已关闭 Map services is disabled";
+    mainForm.plus2.color = 0xFFCD2626;	
+}
+
+// 检查处理host文件
+function ifhosts () {
+		var exists = fsys.hosts.load();
+		var domainToCheck = "static.garmincdn.com";
+		var ip = exists[domainToCheck];
+		if (ip){
+    		mainForm.plus.text = "服务已代理 Hosts proxy is enabled";
+    		mainForm.plus.color = 0xFF458B00;
+    		mainForm.button.disabled = true;
+		} else {
+    		mainForm.plus.text = "请开启代理 Open Hosts proxy";
+    		mainForm.plus.color = 0xFFCD2626;
+    		fsys.hosts.ownCacls();
+    		fsys.hosts.update(
+    			["static.garmincdn.com"] = "127.0.0.1";
+    		);
+    		fsys.hosts.flushDns();
+		}
+}
+
+// 检查是否开启地图服务
+mainForm.checkbox1.oncommand = function(id,event) {
+    if(mainForm.checkbox1.checked) {
+        // 开启地图服务
+        startWebServer ();
+    } else {
+        // 关闭地图服务
+        stopWebServer ();
+    }
+}
+
+//更新host
+mainForm.button.oncommand = function(id,event){
+	ifhosts ();
+}
+
+// 开启地图服务
+startWebServer ();
+// 检查处理host文件
+ifhosts ();
+
+// 创建 web.view 控件
+var wb = web.view(mainForm.webv);
+
+//浏览器回调
+wb.external = {
+	download = function(str){ 
+		//mainForm.msgbox(str);
+		// 获取AppData\Roaming目录路径
+		var roamingPath = io.appData();
+		// 拼接Garmin\VIRB Edit\Telemetry子目录
+		var fullPathstr = roamingPath ++ "\Garmin\VIRB Edit\Telemetry\";
+		var fullPath = string.replace(fullPathstr, "Local", "Roaming");
+		//mainForm.msgbox(fullPath);
+		//判断d.zip是否存在，存在就删除
+		var zipFilePath = io.fullpath(fullPath ++ "\d.zip");
+		// 判断文件是否存在
+		if (io.exist(zipFilePath)) {
+    		// 如果存在则删除文件
+    		io.remove(zipFilePath);
+		}
+		//开始下载
+		var downBox = inet.downBox(mainForm,"正在下载模板包，请稍后... Downloading template package, please wait...",true );
+		if( downBox.download( str , fullPath ++ "d.zip" ) ){
+	 		mainForm.msgbox("文件已下载完成 template package has been downloaded");
+	 			var zipfullPath = fullPath ++ "d.zip";
+	 			var extractPath = fullPath;
+    			var ok, err = zlib.unzip.extract(zipfullPath, extractPath, function(fileName, extractPath, fileInfo, size, unitSize, unitName) {
+        			return true; // 强制替换
+    			});
+    			if (ok) {
+        			mainForm.msgbox("模板已安装 Template has been installed");
+    			} else {
+        			mainForm.msgbox("未正确安装");
+    			}
+
+	 	}
+		return str;
+	};
+}
+
+wb.go('https://youwebserver.site/5X6rAvK6jdyyyDSZYY4Y/rkFSbPa16FZ5poEkBdSC.html');
+
+mainForm.show();
+win.loopMessage();

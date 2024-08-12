@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Quick Start - Leaflet</title>
+
+
+
+    <link rel="stylesheet" href="./css/leaflet.css">
+    <script src="./js/leaflet.js"></script>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /* 防止出现滚动条 */
+        }
+
+        #console {
+            width: 100%;
+            height: 0px;
+            overflow: auto;
+            white-space: pre-wrap;
+            /* 保留空白符和换行符 */
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        #map {
+            position: absolute;
+            top: 0px;
+            /* 从#console的底部开始 */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: auto;
+            /* 高度自动，由浏览器计算 */
+        }
+    </style>
+</head>
+<script>
+    function updateDebugInfo(obj) {
+        var consoleDiv = document.getElementById('console');
+        var message = '';
+
+        function isObject(obj) {
+            return Object.prototype.toString.call(obj) === '[object Object]';
+        }
+
+        function isArray(obj) {
+            return Object.prototype.toString.call(obj) === '[object Array]';
+        }
+
+        function toString(obj, indent) {
+            if (indent === undefined) {
+                indent = '';
+            }
+
+            // Handle null, undefined, and primitive types
+            if (obj === null || obj === undefined) {
+                return String(obj);
+            }
+            switch (typeof obj) {
+                case 'string':
+                    return '"' + obj.replace(/"/g, '\\"') + '"';
+                case 'number':
+                case 'boolean':
+                    return String(obj);
+                case 'function':
+                    return obj.toString();
+            }
+
+            // Handle arrays
+            if (isArray(obj)) {
+                var items = [];
+                for (var i = 0; i < obj.length; i++) {
+                    items.push(toString(obj[i], indent + '  '));
+                }
+                return '[\n' + indent + '  ' + items.join(',\n' + indent + '  ') + '\n' + indent + ']';
+            }
+
+            // Handle objects
+            var properties = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    properties.push(indent + '  "' + key + '": ' + toString(obj[key], indent + '  '));
+                }
+            }
+            return '{\n' + properties.join(',\n') + '\n' + indent + '}';
+        }
+
+        if (isObject(obj) || isArray(obj)) {
+            message = toString(obj, '');
+        } else {
+            message = obj.toString();
+        }
+
+        // 添加换行符，然后追加消息到控制台
+        consoleDiv.innerHTML += message.replace(/\n/g, '<br>') + '<br>';
+    }
+
+    // 示例用法
+    //updateDebugInfo({ name: 'Alice', age: 30 });
+    //updateDebugInfo('This is a text message.');
+    //updateDebugInfo([1, 2, 3]);
+
+
+
+
+    //JS功能
+    /**
+     * 拖拽开始时触发
+     *
+     * @returns 无返回值
+     */
+    function DragStarted() {
+        updateDebugInfo('DragStarted:');
+        // try {
+        //     if (window.external) { window.external.DragStartHandler(); }
+        //     else { console.DragStartHandler(); }
+        // }
+        // catch (err) { }
+    }
+    /**
+     * 拖拽结束时的回调函数
+     */
+    function DragEnded() {
+        updateDebugInfo('DragEnded:');
+        // try {
+        //     if (window.external) { window.external.DragEndHandler(); }
+        //     else { console.DragEndHandler(); }
+        // }
+        // catch (err) { }
+    }
+    /**
+     * 获取最接近轨道的位置
+     *
+     * @param aLat 纬度值
+     * @param aLon 经度值
+     * @returns 返回最接近轨道的位置
+     */
+    function GetClosestPositionOnTrack(aLat, aLon) {
+        updateDebugInfo('GetClosestPositionOnTrack:');
+        // try {
+        //     if (window.external) { return window.external.GetClosestPositionOnTrack(aLat, aLon); }
+        //     else { return console.GetClosestPositionOnTrack(aLat, aLon); }
+        // }
+        // catch (err) { console.log(err.toString()); }
+    }
+    /**
+     * 标记位置改变事件处理函数
+     *
+     * @param aLat 纬度值
+     * @param aLon 经度值
+     * @returns 无返回值
+     */
+    function MarkerPositionChanged(aLat, aLon) {
+        updateDebugInfo('MarkerPositionChanged:');
+        // try {
+        //     if (window.external) { return window.external.MarkerPositionChanged(aLat, aLon); }
+        //     else { return console.MarkerPositionChanged(aLat, aLon); }
+        // }
+        // catch (err) { console.log(err.toString()); }
+    }
+    /**
+     * 地图类型改变时触发该函数
+     *
+     * @param aMap 地图对象
+     * @returns 无返回值
+     */
+    function MapTypeChanged(aMap) {
+        // updateDebugInfo('MapTypeChanged:');
+        // try {
+        //     if (window.external) { window.external.MapTypeChanged(aMap); }
+        //     else { console.MapTypeChanged(aMap); }
+        // }
+        // catch (err) { }
+    }
+    /**
+     * 地图初始化完成后的回调函数
+     *
+     * @returns 无返回值
+     */
+    function MapDidInitialize() {
+        updateDebugInfo('MapDidInitialize:');
+        try {
+            if (window.external) {
+                window.external.MapDidInitialize();
+                updateDebugInfo('external:初始化完成');
+            }
+            else {
+                onsole.MapDidInitialize();
+                updateDebugInfo('onsole:');
+            }
+        } catch (err) {
+
+        }
+
+    }
+    /**
+     * 设置轨迹,画线
+     *
+     * @param aLatList 纬度列表 [ 33.594244960696, 33.594157034531,
+     * @param aLngList 经度列表 [ 119.04615397565, 119.0462519601
+     * @returns 无返回值
+     */
+    function SetTrack(aLatList, aLngList) { // 画线
+        updateDebugInfo('SetTrackSegment:设置轨迹,画线');
+        var aLatList = eval(aLatList);
+        var aLngList = eval(aLngList);
+        var combined = [];
+        for (var i = 0; i < aLatList.length; i++) {
+            combined.push([aLatList[i], aLngList[i]]);
+        }
+        //updateDebugInfo(combined);
+        //return combined;
+        mTrack.setLatLngs(combined);    //更新线
+        map.fitBounds(mTrack.getBounds()); // 调整视野
+
+        // SetTrackImpl(aLatList, aLngList);
+    }
+    /**
+     * 设置轨迹线段
+     *
+     * @param aLatList 纬度列表
+     * @param aLngList 经度列表
+     * @returns 无返回值
+     */
+    function SetTrackSegment(aLatList, aLngList) {
+        updateDebugInfo('SetTrackSegment:设置轨迹线段，貌似无用');
+        //SetTrackSegmentImpl(aLatList, aLngList);
+    }
+    /**
+     * 清除轨迹段
+     *
+     * @returns 无返回值
+     */
+    function ClearTrackSegment() {
+        updateDebugInfo('ClearTrackSegment:清除轨迹段');
+        // if (!mTrack) { 
+        //     return; 
+        // } else { 
+        //     //mTrack.ClearSegment(); 
+        // }
+    }
+    /**
+     * 添加轨迹
+     *
+     * @param aLatList 纬度列表
+     * @param aLngList 经度列表
+     * @returns 无返回值
+     */
+    function AddTrack(aLatList, aLngList) {
+        updateDebugInfo('AddTrack:');
+        // AddTrackImpl(aLatList, aLngList);
+    }
+    /**
+     * 显示轨迹
+     *
+     * @returns 无返回值
+     */
+    function ShowTrack() {
+        updateDebugInfo('ShowTrack:无用');
+        // if (!mTrack) { return; }
+        // mTrack.ShowTrack();
+    }
+    /**
+     * 添加背景轨迹
+     *
+     * @param aLatList 纬度列表
+     * @param aLngList 经度列表
+     */
+    function AddBackgroundTrack(aLatList, aLngList) {
+        updateDebugInfo('AddBackgroundTrack:添加背景轨迹');
+        var aLatList = eval(aLatList);
+        var aLngList = eval(aLngList);
+        var combined = [];
+        for (var i = 0; i < aLatList.length; i++) {
+            combined.push([aLatList[i], aLngList[i]]);
+        }
+        //updateDebugInfo(combined);
+        //return combined;
+        bgTrack.setLatLngs(combined);    //更新线
+        map.fitBounds(mTrack.getBounds()); // 调整视野
+    }
+    /**
+     * 清除背景音轨
+     *
+     * @returns 无返回值
+     */
+    function ClearBackgroundTracks() {
+        updateDebugInfo('ClearBackgroundTracks:');
+        // if (!mTrack) { return; }
+        //mTrack.ClearBackgroundTracks();
+    }
+    /**
+     * 设置标记位置
+     *
+     * @param aLat 纬度
+     * @param aLon 经度
+     * @returns 无返回值
+     */
+    function SetMarkerPosition(aLat, aLon) {
+        //updateDebugInfo('SetMarkerPosition:设置标记位置');//移动事件
+        // updateDebugInfo(aLat);
+        // updateDebugInfo(aLon);
+        marker.setLatLng([aLat, aLon]); //更改标记位置
+        map.panTo([aLat, aLon]);//跟随标记居中
+        // SetMarkerPositionImpl(aLat, aLon); 
+    }
+    /**
+     * 隐藏标记点
+     */
+    function HideMarker() {
+        updateDebugInfo('HideMarker:');
+        // if (!mTrack) { return; }
+        // //mTrack.HideMarker();
+    }
+    /**
+     * 隐藏轨迹
+     *
+     * @returns 无返回值
+     */
+    function HideTrack() {
+        updateDebugInfo('HideTrack:');
+        // if (!mTrack) { return; }
+        //mTrack.HideTrack();
+    }
+    /**
+     * 设置标记是否可拖动
+     *
+     * @param aYesNo 是否可拖动，true 表示可拖动，false 表示不可拖动
+     * @returns 无返回值
+     */
+    function SetMarkerDraggable(aYesNo) {
+        updateDebugInfo('SetMarkerDraggable:');
+        // if (!mTrack) { return; }
+        // mTrack.SetMarkerDraggable(aYesNo);
+    }
+    /**
+     * 设置地图控件标题
+     *
+     * @param aMapTitle 地图控件标题
+     * @param aRoad 路况控件标题
+     * @param aBirdsEye 鸟瞰图控件标题
+     */
+    function SetMapControlTitles(aMapTitle, aRoad, aBirdsEye) {
+        updateDebugInfo('SetMapControlTitles:过无用');
+        // SetMapControlTitlesInternal(aMapTitle, aRoad, aBirdsEye);
+    }
+    /**
+     * 设置地图类型
+     *
+     * @param aMapType 地图类型
+     */
+    function SetMapType(aMapType) {
+        updateDebugInfo('SetMapType:');
+        //SetMapTypeInternal(aMapType);
+    }
+
+
+</script>
+
+<body>
+
+    <div id="console">Console content here...</div>
+    <div id="map"></div>
+    <script>
+
+        //var map = L.map('map').setView([51.505, -0.09], 13);
+        var map = L.map('map', {
+            center: [33.62058375, 119.01116463888889],
+            zoom: 13
+        });
+
+        var tiles = L.tileLayer('http://t2.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=25ce87bb9c54b7c47ef79896a9ba551c', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.tianditu.gov.cn/">天地图</a>'
+        }).addTo(map);
+
+        // 添加天地图的标注图层
+        var annotationLayer = L.tileLayer('http://t0.tianditu.gov.cn/cva_w/wmts?tk=25ce87bb9c54b7c47ef79896a9ba551c&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.tianditu.gov.cn/">天地图</a>'
+        }).addTo(map);
+
+        //设置标记
+        var marker = L.marker([33.505, 119.0]).addTo(map);
+
+
+        //设置线段
+        var mTrack = L.polyline([
+            [33.505, 119.0],
+            [33.505, 119.000000000000001]
+        ], { color: 'red' }).addTo(map);
+        map.fitBounds(mTrack.getBounds());
+
+        //设置背景线段
+        var bgTrack = L.polyline([
+            [33.505, 119.0],
+            [33.505, 119.000000000000001]
+        ], { color: 'red' }).addTo(map);
+
+
+        //初始化佳明环境
+        MapDidInitialize();
+
+
+    </script>
+
+
+
+
+
+
+</body>
+
+</html>
