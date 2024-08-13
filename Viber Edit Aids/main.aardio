@@ -1,5 +1,8 @@
-//RUNAS//
+
 import win.ui;
+
+import fsys.dlg;
+import web.msxml;
 import wsock.tcp.asynHttpServer;
 import fsys.hosts;
 import console;
@@ -9,15 +12,16 @@ import io;
 import inet.downBox;
 import zlib.unzip;
 /*DSG{{*/
-var mainForm = win.form(text="VIRB Edit 辅助工具 Viber Edit Aids v20240808";right=799;bottom=699;max=false)
+var mainForm = win.form(text="VIRB Edit 辅助工具 Viber Edit Aids v20240813";right=799;bottom=859;max=false)
 mainForm.add(
 button={cls="button";text="开启代理服务";left=374;top=60;right=518;bottom=90;z=5};
 checkbox1={cls="checkbox";text="开启地图服务";left=27;top=60;right=127;bottom=90;z=1};
 plus={cls="plus";left=531;top=60;right=781;bottom=90;align="left";z=6};
 plus2={cls="plus";left=135;top=60;right=365;bottom=90;align="left";z=7};
 static={cls="static";text='创建地图服务，需要管理员权限，需占用 80 端口。\r\nCreating a map service requires administrator privileges. It requires occupying port 80.';left=27;top=14;right=365;bottom=64;transparent=1;z=2};
-static2={cls="static";text='将网站代理到本地，需要管理员权限。\r\nTo proxy the website to the local machine requires administrator privileges.';left=381;top=14;right=785;bottom=81;notify=1;transparent=1;z=3};
-webv={cls="custom";left=2;top=99;right=799;bottom=697;z=4}
+static2={cls="static";text='将网站代理到本地，需要管理员权限。\r\nTo proxy the website to the local machine requires administrator privileges.';left=381;top=14;right=785;bottom=81;transparent=1;z=3};
+static3={cls="static";text="拖拽 GPX 文件到这里，简单的进行踏频乘2修改";left=13;top=112;right=293;bottom=240;acceptfiles=1;align="center";border=1;center=1;notify=1;z=8};
+webv={cls="custom";left=2;top=259;right=799;bottom=857;z=4}
 )
 /*}}*/
 
@@ -29,11 +33,13 @@ webv={cls="custom";left=2;top=99;right=799;bottom=697;z=4}
 		function(response,request,session){ 
          	response.loadcode(request.path);
     	}
+
 	});
 
 
 // 启动 Web 服务器
 function startWebServer() {
+
 	httpServer.start("127.0.0.1",80);
 	mainForm.checkbox1.checked = true;
     mainForm.plus2.text = "地图服务已开启 Map services is enabled";
@@ -68,14 +74,17 @@ function ifhosts () {
 		}
 }
 
+
+
+
 // 检查是否开启地图服务
 mainForm.checkbox1.oncommand = function(id,event) {
     if(mainForm.checkbox1.checked) {
         // 开启地图服务
-        startWebServer ();
+        startWebServer();
     } else {
         // 关闭地图服务
-        stopWebServer ();
+        stopWebServer();
     }
 }
 
@@ -85,7 +94,7 @@ mainForm.button.oncommand = function(id,event){
 }
 
 // 开启地图服务
-startWebServer ();
+startWebServer();
 // 检查处理host文件
 ifhosts ();
 
@@ -110,7 +119,10 @@ wb.external = {
     		io.remove(zipFilePath);
 		}
 		//开始下载
-		var downBox = inet.downBox(mainForm,"正在下载模板包，请稍后... Downloading template package, please wait...",true );
+		var downBox = inet.downBox(mainForm,"正在下载模板包，请稍后... Downloading template package, please wait...",true )
+	
+
+	 	
 		if( downBox.download( str , fullPath ++ "d.zip" ) ){
 	 		mainForm.msgbox("文件已下载完成 template package has been downloaded");
 	 			var zipfullPath = fullPath ++ "d.zip";
@@ -129,7 +141,45 @@ wb.external = {
 	};
 }
 
-wb.go('https://youwebserver.site/5X6rAvK6jdyyyDSZYY4Y/rkFSbPa16FZ5poEkBdSC.html');
+//wb.html = "<html><body><script>window.location.href='https://virbedit.data4u.vip/5X6rAvK6jdyyyDSZYY4Y/rkFSbPa16FZ5poEkBdSC.html'</script></body></html>"; 
+wb.go('https://virbedit.data4u.vip/5X6rAvK6jdyyyDSZYY4Y/rkFSbPa16FZ5poEkBdSC.html');
+
+
+//gpx修改
+mainForm.static3.wndproc = function(hwnd,message,wParam,lParam){
+    select(message) {
+        case 0x233/*_WM_DROPFILES*/{
+        //获取文件名
+            var filePath = win.getDropFile(wParam )[1]; 
+            var xmlDoc = web.msxml();
+            xmlDoc.load(filePath);
+            var xmlstr = xmlDoc.xml;
+            var cadence = string.indexOf(xmlstr,"gpxdata:cadence");
+            var cad = string.indexOf(xmlstr,"gpxtpx:cad");
+            if (cadence) {
+                io.print(cadence);
+            	keyword = "gpxdata:cadence";
+            	//将cadence结果更改为2倍
+            	for(k,xnode in xmlDoc.eachNode( keyword ,xnode ) ){
+            		xnode.Text = xnode.text * 2;
+            	}
+            	xmlDoc.save(filePath ++ ".new.gpx");
+            	mainForm.msgbox("文件转换完毕，保存到：" ++ filePath ++ ".new.gpx");
+            }elseif (cad){
+                io.print(cad);
+            	keyword = "gpxtpx:cad";
+            	//将cadence结果更改为2倍
+            	for(k,xnode in xmlDoc.eachNode( keyword ,xnode ) ){
+            		xnode.Text = xnode.text * 2;
+            	}
+            	xmlDoc.save(filePath ++ ".new.gpx");
+            	mainForm.msgbox("文件转换完毕，保存到：" ++ filePath ++ ".new.gpx");
+            }else {
+            	mainForm.msgbox("文件转换失败，未找到关键字");
+            }
+        }
+    }
+}
 
 mainForm.show();
 win.loopMessage();
