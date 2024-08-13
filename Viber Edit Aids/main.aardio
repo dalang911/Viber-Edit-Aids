@@ -1,6 +1,5 @@
 
 import win.ui;
-
 import fsys.dlg;
 import web.msxml;
 import wsock.tcp.asynHttpServer;
@@ -20,7 +19,7 @@ plus={cls="plus";left=531;top=60;right=781;bottom=90;align="left";z=6};
 plus2={cls="plus";left=135;top=60;right=365;bottom=90;align="left";z=7};
 static={cls="static";text='创建地图服务，需要管理员权限，需占用 80 端口。\r\nCreating a map service requires administrator privileges. It requires occupying port 80.';left=27;top=14;right=365;bottom=64;transparent=1;z=2};
 static2={cls="static";text='将网站代理到本地，需要管理员权限。\r\nTo proxy the website to the local machine requires administrator privileges.';left=381;top=14;right=785;bottom=81;transparent=1;z=3};
-static3={cls="static";text="拖拽 GPX 文件到这里，简单的进行踏频乘2修改";left=13;top=112;right=293;bottom=240;acceptfiles=1;align="center";border=1;center=1;notify=1;z=8};
+static3={cls="static";text="选择一个GPX文件，简单的将踏频作乘2修改";left=13;top=112;right=293;bottom=240;align="center";border=1;center=1;notify=1;z=8};
 webv={cls="custom";left=2;top=259;right=799;bottom=857;z=4}
 )
 /*}}*/
@@ -146,11 +145,12 @@ wb.go('https://virbedit.data4u.vip/5X6rAvK6jdyyyDSZYY4Y/rkFSbPa16FZ5poEkBdSC.htm
 
 
 //gpx修改
-mainForm.static3.wndproc = function(hwnd,message,wParam,lParam){
-    select(message) {
-        case 0x233/*_WM_DROPFILES*/{
-        //获取文件名
-            var filePath = win.getDropFile(wParam )[1]; 
+mainForm.static3.oncommand = function(id,event){
+	var path = fsys.dlg.open('*.gpx||',,,mainForm);
+	if(path){
+		//mainForm.editPath.text = path;
+		//获取文件名
+            var filePath = path; 
             var xmlDoc = web.msxml();
             xmlDoc.load(filePath);
             var xmlstr = xmlDoc.xml;
@@ -177,8 +177,7 @@ mainForm.static3.wndproc = function(hwnd,message,wParam,lParam){
             }else {
             	mainForm.msgbox("文件转换失败，未找到关键字");
             }
-        }
-    }
+	}
 }
 
 mainForm.show();
