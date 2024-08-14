@@ -1,7 +1,7 @@
 # Viber-Edit-Aids Viber-Edit 辅助软件
 
-解决在线地图问题 提供仪表盘下载 GPX文件踏频只有一半的问题修改
-Address the issue with online maps, provide dashboard download. Modify the issue where the cadence is only recorded at half in the GPX file.
+解决在线地图问题、提供仪表盘下载、将GPX文件转换为virbedit可用的格式、可选的踏频数值翻倍
+Resolve online map issues, offer dashboard download, convert GPX files to a format compatible with virbedit, and optionally double the cadence values.
 
 使用aardio开发
 Developed using aardio.
