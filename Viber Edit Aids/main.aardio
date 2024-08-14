@@ -10,16 +10,20 @@ import web.view;
 import io;
 import inet.downBox;
 import zlib.unzip;
+
+
 /*DSG{{*/
 var mainForm = win.form(text="VIRB Edit 辅助工具 Viber Edit Aids v20240813";right=799;bottom=859;max=false)
 mainForm.add(
 button={cls="button";text="开启代理服务";left=374;top=60;right=518;bottom=90;z=5};
+checkbox={cls="checkbox";text="将踏频*2";left=27;top=131;right=129;bottom=152;checked=1;z=9};
 checkbox1={cls="checkbox";text="开启地图服务";left=27;top=60;right=127;bottom=90;z=1};
 plus={cls="plus";left=531;top=60;right=781;bottom=90;align="left";z=6};
 plus2={cls="plus";left=135;top=60;right=365;bottom=90;align="left";z=7};
 static={cls="static";text='创建地图服务，需要管理员权限，需占用 80 端口。\r\nCreating a map service requires administrator privileges. It requires occupying port 80.';left=27;top=14;right=365;bottom=64;transparent=1;z=2};
 static2={cls="static";text='将网站代理到本地，需要管理员权限。\r\nTo proxy the website to the local machine requires administrator privileges.';left=381;top=14;right=785;bottom=81;transparent=1;z=3};
-static3={cls="static";text="选择一个GPX文件，简单的将踏频作乘2修改";left=13;top=112;right=293;bottom=240;align="center";border=1;center=1;notify=1;z=8};
+static3={cls="static";text="选择一个GPX文件进行转换";left=27;top=159;right=307;bottom=236;align="center";border=1;center=1;notify=1;z=8};
+static4={cls="static";text="尝试将gpx文件转换为virbedit可用的格式";left=27;top=103;right=275;bottom=124;transparent=1;z=10};
 webv={cls="custom";left=2;top=259;right=799;bottom=857;z=4}
 )
 /*}}*/
@@ -143,40 +147,129 @@ wb.external = {
 //wb.html = "<html><body><script>window.location.href='https://virbedit.data4u.vip/5X6rAvK6jdyyyDSZYY4Y/rkFSbPa16FZ5poEkBdSC.html'</script></body></html>"; 
 wb.go('https://virbedit.data4u.vip/5X6rAvK6jdyyyDSZYY4Y/rkFSbPa16FZ5poEkBdSC.html');
 
-
+var new_string_pattern = /*
+	<gpx creator="StravaGPX" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3">
+                          */;
+                        
+                          
 //gpx修改
 mainForm.static3.oncommand = function(id,event){
 	var path = fsys.dlg.open('*.gpx||',,,mainForm);
 	if(path){
-		//mainForm.editPath.text = path;
-		//获取文件名
+			
             var filePath = path; 
             var xmlDoc = web.msxml();
             xmlDoc.load(filePath);
-            var xmlstr = xmlDoc.xml;
-            var cadence = string.indexOf(xmlstr,"gpxdata:cadence");
-            var cad = string.indexOf(xmlstr,"gpxtpx:cad");
-            if (cadence) {
-                io.print(cadence);
-            	keyword = "gpxdata:cadence";
-            	//将cadence结果更改为2倍
-            	for(k,xnode in xmlDoc.eachNode( keyword ,xnode ) ){
-            		xnode.Text = xnode.text * 2;
-            	}
-            	xmlDoc.save(filePath ++ ".new.gpx");
-            	mainForm.msgbox("文件转换完毕，保存到：" ++ filePath ++ ".new.gpx");
-            }elseif (cad){
-                io.print(cad);
-            	keyword = "gpxtpx:cad";
-            	//将cadence结果更改为2倍
-            	for(k,xnode in xmlDoc.eachNode( keyword ,xnode ) ){
-            		xnode.Text = xnode.text * 2;
-            	}
-            	xmlDoc.save(filePath ++ ".new.gpx");
-            	mainForm.msgbox("文件转换完毕，保存到：" ++ filePath ++ ".new.gpx");
-            }else {
-            	mainForm.msgbox("文件转换失败，未找到关键字");
-            }
+
+			//定义开始时间
+			var metadata_time = {'time':''}; 
+			//定义标题
+			var trk_name = {'name':''}; 
+			//定义运动类型
+			var trk_type = {'type':''}; 
+			var trkpt_arr = {}; 
+			//var trkpt = {'time':'','lat':'','lon':'','ele':'','hr':'','cad':''}; 
+			
+			//开始时间
+			for(k,xnode in xmlDoc.eachNode( "metadata") ){
+    			for(k,xnode in xmlDoc.eachNode( "time",xnode) ){
+        			metadata_time['time'] = xnode.text;
+    			}
+			}
+			//开始时间、标题
+			for(k,xnode in xmlDoc.eachNode( "trk") ){
+    			for(k,xnode in xmlDoc.eachNode( "name",xnode) ){
+        			trk_name['name'] = xnode.text;
+    			}
+    			for(k,xnode in xmlDoc.eachNode( "type",xnode) ){
+        			trk_type['type'] = xnode.text;
+    			}
+			}
+			//
+			for(k,xnode in xmlDoc.eachNode( "trkseg") ){
+				
+    			for(k,xnode in xmlDoc.eachNode( "trkpt",xnode) ){
+    			    trkpt = {'time':'','lat':'','lon':'','ele':'','hr':'','cad':''}; 
+    			    
+    			    lat = xnode.attributes(0).nodeValue;
+    			    lon = xnode.attributes(1).nodeValue;
+    			    for(k,xnode in xmlDoc.eachNode( "ele",xnode) ){
+        				ele = xnode.text;
+    				}
+    			    for(k,xnode in xmlDoc.eachNode( "time",xnode) ){
+        				atime = xnode.text;
+        				
+    				}
+    				for(k,xnode in xmlDoc.eachNode( "extensions",xnode) ){
+    				    //高驰
+        				for(k,xnode in xmlDoc.eachNode( "gpxdata:hr",xnode) ){
+        					hr = xnode.text;
+    					}
+    					for(k,xnode in xmlDoc.eachNode( "gpxdata:cadence",xnode) ){
+    						if( mainForm.checkbox.checked ){
+            					cad = xnode.text * 2;
+            				}else {
+            					cad = xnode.text;
+            				}
+    					}
+    					//strava、
+    					for(k,xnode in xmlDoc.eachNode( "gpxtpx:TrackPointExtension",xnode) ){
+        					for(k,xnode in xmlDoc.eachNode( "gpxtpx:hr",xnode) ){
+        						hr = xnode.text;
+    						}
+    						for(k,xnode in xmlDoc.eachNode( "gpxtpx:cad",xnode) ){
+    						    if( mainForm.checkbox.checked ){
+            						cad = xnode.text * 2;
+            					}else {
+            						cad = xnode.text;
+            					}
+    						}
+    					}
+    				}
+    			    trkpt = {'time':atime,'lat':lat,'lon':lon,'ele':ele,'hr':hr,'cad':cad};
+
+    			    table.push(trkpt_arr ,trkpt);
+    			}
+
+			}
+			
+			var trkpt_str = "";
+			for (i = 1; #trkpt_arr; 1) {
+    			var entry = trkpt_arr[i];
+    			//单个节点字符串
+    			trkpt_str += "
+   <trkpt lat='"++entry['lat']++"' lon='"++entry['lon']++"'>
+    <ele>"++entry['ele']++"</ele>
+    <time>"++entry['time']++"</time>
+    <extensions>
+     <gpxtpx:TrackPointExtension>
+      <gpxtpx:hr>"++entry['hr']++"</gpxtpx:hr>
+      <gpxtpx:cad>"++entry['cad']++"</gpxtpx:cad>
+     </gpxtpx:TrackPointExtension>
+    </extensions>
+   </trkpt>";
+    			//result += "Lon: " ++ entry['lon'] ++ ", Lat: " ++ entry['lat'] ++ ", Time: " ++ entry['time'] ++ "\n";
+			}			
+			//console.dump( trkpt_str );
+			//拼接GPX字符串
+			gpx_text = '
+<?xml version="1.0" encoding="UTF-8"?>\r\n
+<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd" creator="VirbeditAidsGPX" version="1.1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3">\r\n
+ <metadata>\r\n
+  <time>'++ metadata_time['time'] ++'</time>\r\n
+ </metadata>\r\n
+ <trk>\r\n
+  <name>'++ trk_name['name'] ++'</name>\r\n
+  <type>'++ trk_type['type'] ++'</type>\r\n
+  <trkseg>\r\n
+  	'++ trkpt_str ++'\r\n
+  </trkseg>\r\n
+ </trk>\r\n
+</gpx>';
+			
+			string.save(filePath ++ ".new.gpx",gpx_text);
+			mainForm.msgbox("文件转换完毕，保存为：" ++ filePath ++ ".new.gpx")
+			
 	}
 }
 
