@@ -1,5 +1,7 @@
 # Viber-Edit-Aids Viber-Edit 辅助软件
 
+![image](20240814165747.jpg)
+
 解决在线地图问题、提供仪表盘下载、将GPX文件转换为virbedit可用的格式、可选的踏频数值翻倍
 Resolve online map issues, offer dashboard download, convert GPX files to a format compatible with virbedit, and optionally double the cadence values.
 
