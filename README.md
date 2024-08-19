@@ -2,6 +2,9 @@
 
 ![image](20240819182651.jpg)
 
+# 新增将gpx文件转换为virb edit可用的格式 Add a feature to convert GPX files to a format compatible with Virb Edit.
+# 新增一个历史天气组件，可在日期与时间字段调用 Add a historical weather component that can be called in the date and time fields.
+
 解决在线地图问题、提供仪表盘下载、将GPX文件转换为virbedit可用的格式、可选的踏频数值翻倍
 Resolve online map issues, offer dashboard download, convert GPX files to a format compatible with virbedit, and optionally double the cadence values.
 
